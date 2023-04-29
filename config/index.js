@@ -8,6 +8,8 @@ const logger = require("morgan");
 // ℹ️ Needed when we deal with cookies (we will when dealing with authentication)
 // https://www.npmjs.com/package/cookie-parser
 const cookieParser = require("cookie-parser");
+const session = require("express-session")
+const MongoStore = require("connect-mongo")
 
 // ℹ️ Serves a custom favicon on each request
 // https://www.npmjs.com/package/serve-favicon
@@ -17,6 +19,7 @@ const favicon = require("serve-favicon");
 // https://www.npmjs.com/package/path
 const path = require("path");
 
+const { MONGO_URI } = require("../db")
 // Middleware configuration
 module.exports = (app) => {
   // In development environment the app logs
@@ -36,4 +39,17 @@ module.exports = (app) => {
 
   // Handles access to the favicon
   app.use(favicon(path.join(__dirname, "..", "public", "images", "favicon.ico")));
+
+  app.use(session({
+    secret: process.env.SESS_SECRET,
+    store: MongoStore.create({ mongoUrl: MONGO_URI}),
+    resave: true,
+    saveUninitialized: true,
+
+    cookie: {
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      maxAge: 365 * 24 * 60 * 60 * 1000, // 60 * 1000 * 10 ms === 10 min
+}}))
 };

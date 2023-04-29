@@ -19,6 +19,9 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: true
+    },
+    coverLetters:{
+      type: Schema.Types.ObjectId, ref: 'CoverLetter'
     }
   },
   {
