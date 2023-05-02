@@ -12,12 +12,17 @@ router.get("/signup",(req,res) =>{
 
 //send singup data to create a profile
 router.post("/signup",async(req,res)=>{
+  try{
     console.log(req.body)
-    res.redirect("/login")
     const salt = await bcryptjs.genSalt(saltRounds);
     const hash = await bcryptjs.hash(req.body.password, salt);
     const user = new User({username: req.body.username, email:req.body.email, password: hash})
     await user.save();
+    res.redirect("/auth/login");
+  }
+  catch(err){
+    res.render("auth/signup",{ message: 'Username already exists' })
+  }
 })
 
 //destroy session if click on logout and redirect to homepage
