@@ -3,6 +3,9 @@ const router = express.Router();
 const isLoggedIn = require("../middlewares/isLoggedIn")
 const CoverLetter = require("../models/CoverLetter.model")
 const User = require("../models/User.model")
+const saltRounds = 12
+const bcryptjs = require("bcryptjs")
+
 
 /* GET home page */
 router.get("/", (req, res, next) => {
@@ -20,20 +23,46 @@ router.get("/profile/:username", isLoggedIn, async(req,res)=>{
 
 
 //render edit profile page
-router.get("/profile/:username/edit", isLoggedIn, async(req,res)=>{
+router.get("/profile/:username/edit"/*, isLoggedIn*/, async(req,res)=>{
   const user = await User.findOne({username: req.params.username})
   res.render("editProfile",user)
 })
 
 //post the data from edit profile page and render a edited version
-router.post("/profile/:username/edited", isLoggedIn, async(req,res)=>{
-  const updateData = {username: req.body.username, email: req.body.email, password: req.body.password}
+router.post("/profile/:username/edit"/*, isLoggedIn*/, async(req,res)=>{
+  try{
+    
+  //check if the username already exists
+  const existingUser = await User.findOne({ username: req.body.username });
+    if (existingUser && existingUser.username !== req.params.username) {
+      throw new Error("Username already exists");
+    }
+  const salt = await bcryptjs.genSalt(saltRounds);
+  const hash = await bcryptjs.hash(req.body.password, salt);
+  const updateData = {username: req.body.username, email: req.body.email, password: hash}
+  const{username,email,password} = updateData
   const user = await User.findOneAndUpdate(
     { username: req.params.username },
     updateData,
     { new: true }
   )
-  res.render("editedProfile",user)
+  res.render("editProfile",{
+    username:username,
+    email:email,
+    password:password,
+    message: "Update succeed!"
+  })
+}
+catch(err){
+  const user = await User.findOne({username: req.params.username})
+  const{username,email,password} = user
+  res.render("editProfile", {
+    username:username,
+    email:email,
+    password:password,
+    message: err.message
+  })
+}
 })
 
 //render each coverletter page

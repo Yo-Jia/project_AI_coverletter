@@ -1,0 +1,13 @@
+<h1>Edit your Profile</h1>
+{{#if message}}
+<div class="warning">{{message}}</div>
+{{/if}}
+<form action="/profile/{{this.username}}/edit" method="post">
+<label for="username">Username</label>
+<input type="text" name="username" value="{{this.username}}">
+<label for="email">E-Mail</label>
+<input type="email" name="email" value="{{this.email}}">
+<label for="password">Password</label>
+<input type="password" name="password" value="{{this.password}}">
+<a href="/profile/{{this.username}}">Back to my Profile</a><button type="submit">Confirm</button>
+</form>
