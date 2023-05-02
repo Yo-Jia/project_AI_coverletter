@@ -1,9 +1,9 @@
 const { Schema, model } = require("mongoose");
 
 const coverLetterSchema = new Schema(
-  {title: String,
-    description: String,
-    letter: String 
+  {jobTitle: String,
+    jobDescription: String,
+    coverLetter: String 
   },
 );
 
