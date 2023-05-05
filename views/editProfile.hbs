@@ -2,12 +2,12 @@
 {{#if message}}
 <div class="warning">{{message}}</div>
 {{/if}}
-<form action="/profile/{{this.username}}/edit" method="post">
+<form action="/profile/{{user.username}}/edit" method="post">
 <label for="username">Username</label>
-<input type="text" name="username" value="{{this.username}}">
+<input type="text" name="username" value="{{user.username}}">
 <label for="email">E-Mail</label>
-<input type="email" name="email" value="{{this.email}}">
+<input type="email" name="email" value="{{user.email}}">
 <label for="password">Password</label>
-<input type="password" name="password" value="{{this.password}}">
-<a href="/profile/{{this.username}}">Back to my Profile</a><button type="submit">Confirm</button>
+<input type="password" name="password" value="{{user.password}}">
+<a href="/profile/{{user.username}}">Back to my Profile</a><button type="submit">Confirm</button>
 </form>

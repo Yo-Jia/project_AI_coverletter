@@ -3,7 +3,7 @@ const isLoggedOut = (req,res,next) =>{
         next();
         return;
     }
-    res.redirect("/profile")
+    res.redirect(`/profile/${req.session.user.username}`)
 }
 
 module.exports = isLoggedOut;

@@ -15,21 +15,24 @@ router.get("/", (req, res, next) => {
 //set the route in auth folder all under the /auth
 router.use("/auth", require("./auth.routes"))
 
+
+router.use(isLoggedIn);
+
 //render profile page get all the infos from user
 router.get("/profile/:username", isLoggedIn, async(req,res)=>{
   const user = await User.findOne({username: req.params.username}).populate("coverLetters")
-  res.render("profile",user)
+  res.render("profile",{user})
 })
 
 
 //render edit profile page
-router.get("/profile/:username/edit"/*, isLoggedIn*/, async(req,res)=>{
+router.get("/profile/:username/edit", isLoggedIn, async(req,res)=>{
   const user = await User.findOne({username: req.params.username})
-  res.render("editProfile",user)
+  res.render("editProfile",{user})
 })
 
 //post the data from edit profile page and render a edited version
-router.post("/profile/:username/edit"/*, isLoggedIn*/, async(req,res)=>{
+router.post("/profile/:username/edit", isLoggedIn, async(req,res)=>{
   try{
     
   //check if the username already exists
@@ -47,6 +50,7 @@ router.post("/profile/:username/edit"/*, isLoggedIn*/, async(req,res)=>{
     { new: true }
   )
   res.render("editProfile",{
+    user:user,
     username:username,
     email:email,
     password:password,
@@ -57,6 +61,7 @@ catch(err){
   const user = await User.findOne({username: req.params.username})
   const{username,email,password} = user
   res.render("editProfile", {
+    user:user,
     username:username,
     email:email,
     password:password,
@@ -68,7 +73,7 @@ catch(err){
 //render each coverletter page
 router.get("/profile/:coverLetterId", isLoggedIn, async(req,res)=>{
   const coverLetter = await CoverLetter.findById(req.params.coverLetterId)
-  res.render("coverLetter",coverLetter)
+  res.render("coverLetter",{user:req.session.user, coverLetter:coverLetter})
 })
 
 // delete a cover letter
@@ -80,7 +85,7 @@ router.post("/profile/:coverLetterId/delete", isLoggedIn, async(req,res)=>{
 // create a cover letter page
 router.get("/profile/:username/create", isLoggedIn, async(req,res)=>{
   const user = await User.findOne({username: req.params.username})
-  res.render("/create",user)
+  res.render("create",{user})
 })
 
 //create a coverletter in the database
@@ -91,7 +96,7 @@ router.post("/profile/:username/create", isLoggedIn, async(req,res)=>{
 })
 
 router.get("/contact",(req,res)=>{
-  res.render("/contact", req.session.user)
+  res.render("contact", {user:req.session.user})
 })
 
 module.exports = router;
