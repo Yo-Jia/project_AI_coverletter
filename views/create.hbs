@@ -1,7 +1,7 @@
 <body class="is-preload homepage">
     <div id="page-wrapper">
         <body>
-            <form id="coverLetterForm">
+            <form method="post" action="/profile/{{user.username}}/create" id="coverLetterForm">
                 <label for="jobTitle">Job Title:</label>
                 <input type="text" id="jobTitle" name="jobTitle" required>
                 <br>
@@ -10,15 +10,22 @@
                 <br>
                 <button type="submit">Generate Cover Letter</button>
             </form>
-
+{{#if cvResponse}}
             <pre id="coverLetter"></pre>
             <div id="popup">
                 <div id="popup-inner">
                     <span id="popup-close">&times;</span>
                     <h2>Cover Letter:</h2>
-                    <pre id="popup-content"></pre>
+                    <pre id="popup-content">{{cvResponse}}</pre>
                     <button id="copyButton">Copy to Clipboard</button>
+                                            <form method="post" action="/profile/{{user.username}}/save">
+            <input type="checkbox" name="public" id="public" value="true">
+            <label for="public">Make public</label>
+            <br>
+            <button type="submit">Save Cover Letter</button>
+            </form>
                 </div>
+
             </div>
 
             <script>
@@ -31,10 +38,14 @@
                     });
                 });
             </script>
+
+                <script src="/js/coverLetter.js"></script>
+
+        {{/if}}
+
         </body>
 
 
     <!-- Scripts -->
 
-    <script src="/js/coverLetter.js"></script>
 
