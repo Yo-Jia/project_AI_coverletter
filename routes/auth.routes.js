@@ -4,15 +4,24 @@ const saltRounds = 12
 const express = require("express")
 const router = express.Router()
 const isLoggedOut = require("../middlewares/isLoggedOut")
+const isLoggedIn = require("../middlewares/isLoggedIn")
+
 
 // signup page
-router.get("/signup",(req,res) =>{
+router.get("/signup",isLoggedOut,(req,res) =>{
     res.render("auth/signup")
 })
 
 //send singup data to create a profile
 router.post("/signup",async(req,res)=>{
   try{
+    const existingUser = await User.findOne({ username: req.body.username });
+    if (existingUser && existingUser.username !== req.params.username) {
+      throw new Error("Username already exists");
+    }
+    if (req.body.password !== req.body.confirmPassword) {
+      throw new Error("Passwords do not match");
+    }
     console.log(req.body)
     const salt = await bcryptjs.genSalt(saltRounds);
     const hash = await bcryptjs.hash(req.body.password, salt);
@@ -21,12 +30,18 @@ router.post("/signup",async(req,res)=>{
     res.redirect("/auth/login");
   }
   catch(err){
-    res.render("auth/signup",{ message: 'Username already exists' })
+    if (err.message === "Username already exists") {
+      res.render("auth/signup", { message: "Username already exists" });
+    } else if (err.message === "Passwords do not match") {
+      res.render("auth/signup", { message: "Passwords do not match" });
+    } else {
+      res.render("auth/signup", { message: "An error occurred" });
+    }
   }
 })
 
 //destroy session if click on logout and redirect to homepage
-router.post("/logout", (req, res, next) => {
+router.get("/logout", (req, res, next) => {
     req.session.destroy((err) => {
       if (err) {
         next(err);

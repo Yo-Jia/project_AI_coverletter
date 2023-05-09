@@ -1,0 +1,51 @@
+<body class="is-preload homepage">
+    <div id="page-wrapper">
+        <body>
+            <form method="post" action="/profile/{{user.username}}/create" id="coverLetterForm">
+                <label for="jobTitle">Job Title:</label>
+                <input type="text" id="jobTitle" name="jobTitle" required>
+                <br>
+                <label for="jobDescription">Job Description:</label>
+                <textarea id="jobDescription" name="jobDescription" required></textarea>
+                <br>
+                <button type="submit">Generate Cover Letter</button>
+            </form>
+{{#if cvResponse}}
+            <pre id="coverLetter"></pre>
+            <div id="popup">
+                <div id="popup-inner">
+                    <span id="popup-close">&times;</span>
+                    <h2>Cover Letter:</h2>
+                    <pre id="popup-content">{{cvResponse}}</pre>
+                    <button id="copyButton">Copy to Clipboard</button>
+                                            <form method="post" action="/profile/{{user.username}}/save">
+            <input type="checkbox" name="public" id="public" value="true">
+            <label for="public">Make public</label>
+            <br>
+            <button type="submit">Save Cover Letter</button>
+            </form>
+                </div>
+
+            </div>
+
+            <script>
+                document.getElementById("copyButton").addEventListener("click", function () {
+                    const textToCopy = document.getElementById("popup-content").textContent;
+                    navigator.clipboard.writeText(textToCopy).then(function () {
+                        console.log("Text copied to clipboard");
+                    }).catch(function (err) {
+                        console.error("Failed to copy text: ", err);
+                    });
+                });
+            </script>
+
+                <script src="/js/coverLetter.js"></script>
+
+        {{/if}}
+
+        </body>
+
+
+    <!-- Scripts -->
+
+
