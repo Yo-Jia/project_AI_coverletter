@@ -30,12 +30,11 @@ router.post("/signup",async(req,res)=>{
         "Password must contain at least 1 uppercase letter, 1 lowercase letter, and be at least 8 characters long"
       );
     }
-
-    console.log(req.body)
     const salt = await bcryptjs.genSalt(saltRounds);
     const hash = await bcryptjs.hash(req.body.password, salt);
     const user = new User({username: req.body.username, email:req.body.email, password: hash})
-    await user.save();
+    const userSave = await user.save();
+    console.log(userSave)
     res.redirect("/auth/login");
   }
   catch(err){

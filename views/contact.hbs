@@ -9,9 +9,10 @@
 
             </header>
             <main>
+                
                 <section class="contact-form-container">
                     <h2>We'd love to hear from you!</h2>
-                    <form id="contact-form">
+                    <form id="contact-form" method="post" action="/contact">
                         <label for="name">Name</label>
                         <input type="text" id="name" name="name" placeholder="Your name" required>
 
@@ -24,7 +25,7 @@
 
                         <button type="submit" class="submit-button">Submit</button>
                     </form>
-                    <p class="form-message"></p>
+                    <p class="form-message">{{message}}</p>
                 </section>
             </main>
 
@@ -33,6 +34,6 @@
 
     <!-- Scripts -->
 
-    <script src="/js/contact.js"></script>
+    {{!-- <script src="/js/contact.js"></script> --}}
 
 </body>
