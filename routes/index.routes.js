@@ -5,7 +5,20 @@ const CoverLetter = require("../models/CoverLetter.model")
 const User = require("../models/User.model")
 const saltRounds = 12
 const bcryptjs = require("bcryptjs")
+const Contact = require("../models/Contact.model")
 
+router.get("/contact",(req,res)=>{
+  res.render("contact", {user:req.session.user})
+})
+
+router.post("/contact", async (req, res) => {
+  try{
+  const contact = new Contact({name:req.body.name,email:req.body.email,message:req.body.message})
+  const saveContact = await contact.save();
+  console.log(saveContact)
+  res.render("contact",{message:'Thank you for contacting us! We will get back to you shortly.'})}
+  catch(err){console.log("there's an error",err)}
+})
 
 /* GET home page */
 router.get("/", (req, res, next) => {
@@ -14,7 +27,6 @@ router.get("/", (req, res, next) => {
 
 //set the route in auth folder all under the /auth
 router.use("/auth", require("./auth.routes"))
-
 
 router.use(isLoggedIn);
 
@@ -121,6 +133,7 @@ router.get("/profile/:username/create", isLoggedIn, async(req,res)=>{
     const data = await response.json();
     return data;
 }
+
 res.render("create",{user,cvResponse})
   // const createCoverLetter = await CoverLetter.create({jobTitle,jobDescription,coverLetter:cvResponse,public})
   //  res.redirect(`/profile/coverLetter/${createCoverLetter._id}`)
@@ -144,8 +157,6 @@ router.post("/profile/:username/save", isLoggedIn, async (req, res) => {
   res.redirect(`/profile/coverLetter/${coverLetter._id}`);
 });
 
-router.get("/contact",(req,res)=>{
-  res.render("contact", {user:req.session.user})
-})
+
 
 module.exports = router;
