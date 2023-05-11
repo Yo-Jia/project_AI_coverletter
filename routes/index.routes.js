@@ -111,7 +111,7 @@ router.get("/profile/:username/create", isLoggedIn, async(req,res)=>{
         },
         body: JSON.stringify({
             prompt: prompt,
-            max_tokens: 1000,
+            max_tokens: 4,
             n: 1,
             stop: null,
             temperature: 0.4,

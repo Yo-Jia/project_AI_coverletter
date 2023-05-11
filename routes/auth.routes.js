@@ -20,6 +20,7 @@ router.post("/signup",async(req,res)=>{
       throw new Error("Username already exists");
     }
     if (req.body.password !== req.body.confirmPassword) {
+      console.log(req.body)
       throw new Error("Passwords do not match");
     }
     console.log(req.body)
@@ -35,7 +36,7 @@ router.post("/signup",async(req,res)=>{
     } else if (err.message === "Passwords do not match") {
       res.render("auth/signup", { message: "Passwords do not match" });
     } else {
-      res.render("auth/signup", { message: "An error occurred" });
+      res.render("auth/signup", { message: err});
     }
   }
 })
