@@ -1,13 +1,3 @@
-<!DOCTYPE HTML>
-
-<html>
-
-<head>
-    <title>AI Cover Letter Generator</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    <link rel="stylesheet" href="assets/css/main.css" />
-</head>
 
 <body class="is-preload homepage">
     <div id="page-wrapper">
@@ -28,16 +18,17 @@
                         <h2>Name</h2>
                         <p>Email Address</p>
                         <p>Job Title/Position</p>
-                        <button class="edit-profile-button">Edit Profile</button>
+                        <a href="/profile/{{user.username}}/edit"><button class="edit-profile-button">Edit Profile</button></a>
                     </div>
-                    <form class="edit-form" style="display: none;">
+                    {{!-- <form class="edit-form" style="display: none;">
                         <input type="text" name="name" placeholder="Name">
                         <input type="email" name="email" placeholder="Email Address">
                         <input type="text" name="jobTitle" placeholder="Job Title/Position">
                         <button type="submit">Save</button>
                         <button type="button" class="cancel-edit">Cancel</button>
-                    </form>
+                    </form> --}}
                 </section>
+                
                 <!-- ... -->
                 <section class="bio">
                     <h3>About Me</h3>
@@ -67,8 +58,36 @@
                     <h3>Connect with me</h3>
                     <!-- Add social media icons and links here -->
                 </section>
+                <section class="cover-letters">
+  <h3>Cover Letters</h3>
+  {{#if user.coverLetters}}
+              <div id="features-wrapper">
+                <div class="container">
+                <div class="row">
+      {{#each user.coverLetters}}
+                    <div class="col-4 col-12-medium">
+
+                        <!-- Box -->
+                        <section class="box feature cv-box">
+                            <div class="inner">
+                                 <a href="/profile/coverLetter/{{this._id}}"></a><h3 class="cv-title">{{this.jobTitle}}</h3></a>
+                                <p class="coverletter-overflow">{{this.coverLetter}}</p>
+                                <a href="/profile/coverLetter/{{this._id}}">read more</a>
+                            </div>
+                        </section>
+                                            </div>
+
+      {{/each}}
+
+                    
+
+                    </div>
+                </div>
+            </div>
+  {{else}}
+    <p>No cover letters found.</p>
+  {{/if}}
+</section>
             </main>
             <script src="assets/js/profile.js"></script>
         </body>
-
-</html>
