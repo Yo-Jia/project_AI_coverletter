@@ -23,6 +23,14 @@ router.post("/signup",async(req,res)=>{
       console.log(req.body)
       throw new Error("Passwords do not match");
     }
+    //password validation
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
+    if (!passwordRegex.test(req.body.password)) {
+      throw new Error(
+        "Password must contain at least 1 uppercase letter, 1 lowercase letter, and be at least 8 characters long"
+      );
+    }
+
     console.log(req.body)
     const salt = await bcryptjs.genSalt(saltRounds);
     const hash = await bcryptjs.hash(req.body.password, salt);
@@ -35,7 +43,9 @@ router.post("/signup",async(req,res)=>{
       res.render("auth/signup", { message: "Username already exists" });
     } else if (err.message === "Passwords do not match") {
       res.render("auth/signup", { message: "Passwords do not match" });
-    } else {
+    } else if (err.message === "Password must contain at least 1 uppercase letter, 1 lowercase letter, and be at least 8 characters long") {
+      res.render("auth/signup", { message: err.message });
+    }else {
       res.render("auth/signup", { message: err});
     }
   }
