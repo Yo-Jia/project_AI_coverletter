@@ -7,6 +7,7 @@ const saltRounds = 12
 const bcryptjs = require("bcryptjs")
 const Contact = require("../models/Contact.model")
 
+
 router.get("/contact",(req,res)=>{
   res.render("contact", {user:req.session.user})
 })
@@ -23,6 +24,16 @@ router.post("/contact", async (req, res) => {
 /* GET home page */
 router.get("/", (req, res, next) => {
   res.render("index");
+});
+
+/* Blog page */
+router.get("/blog", (req, res, next) => {
+  res.render("blog");
+});
+
+/* Coming soon page */
+router.get("/coming-soon", (req, res, next) => {
+  res.render("comingsoon");
 });
 
 //set the route in auth folder all under the /auth
@@ -123,7 +134,7 @@ router.get("/profile/:username/create", isLoggedIn, async(req,res)=>{
         },
         body: JSON.stringify({
             prompt: prompt,
-            max_tokens: 4,
+            max_tokens: 1000,
             n: 1,
             stop: null,
             temperature: 0.4,

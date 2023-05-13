@@ -17,4 +17,6 @@ form.addEventListener('submit', async (event) => {
 });
 
 
-
+popupClose.addEventListener('click', function() {
+    popup.style.display = 'none';
+});
