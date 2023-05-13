@@ -3107,3 +3107,37 @@ label[for="public"] {
     cursor: pointer;
     border-radius: 5px;
 }
+
+
+/*tip ands recommedations */
+
+.tips-section {
+    margin-bottom: 20px;
+}
+
+.section-header {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 10px;
+	text-align: center;
+}
+
+.tips-list {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding: 0;
+    list-style-type: none;
+}
+
+.tip-item {
+    flex: 0 0 calc(20% - 10px);
+    background-color: #f4f4f4;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 10px;
+    text-align: center;
+}
