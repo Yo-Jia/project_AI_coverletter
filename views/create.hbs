@@ -1,5 +1,6 @@
 <body class="is-preload homepage">
     <div id="page-wrapper">
+
         <body>
             <form method="post" action="/profile/{{user.username}}/create" id="coverLetterForm">
                 <label for="jobTitle">Job Title:</label>
@@ -8,9 +9,12 @@
                 <label for="jobDescription">Job Description:</label>
                 <textarea id="jobDescription" name="jobDescription" required></textarea>
                 <br>
+                <label for="jobExperience">Job Experience:</label>
+                <input type="text" id="jobExperience" name="jobExperience" required>
+                <br>
                 <button type="submit">Generate Cover Letter</button>
             </form>
-{{#if cvResponse}}
+            {{#if cvResponse}}
             <pre id="coverLetter"></pre>
             <div id="popup">
                 <div id="popup-inner">
@@ -18,15 +22,16 @@
                     <h2>Cover Letter:</h2>
                     <pre id="popup-content">{{cvResponse}}</pre>
                     <button id="copyButton">Copy to Clipboard</button>
-                                            <form method="post" action="/profile/{{user.username}}/save">
-            
-            <label for="public">Make public</label>
-            <br>
-            <button type="submit">Save Cover Letter</button>
-            </form>
+                    <button id="downloadButton">Download Cover Letter</button>
+                    <form method="post" action="/profile/{{user.username}}/save">
+                        <label for="public">Make public</label>
+                        <br>
+                        <button type="submit">Save Cover Letter</button>
+                    </form>
                 </div>
 
             </div>
+
 
             <script>
                 document.getElementById("copyButton").addEventListener("click", function () {
@@ -48,4 +53,20 @@
 
     <!-- Scripts -->
 
+    <script>
+        document.getElementById('downloadButton').addEventListener('click', function () {
+            var cvResponse = document.getElementById('popup-content').textContent;
+            var filename = 'cover_letter.txt';
 
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(cvResponse));
+            element.setAttribute('download', filename);
+
+            element.style.display = 'none';
+            document.body.appendChild(element);
+
+            element.click();
+
+            document.body.removeChild(element);
+        });
+ 

@@ -113,37 +113,39 @@ router.get("/profile/:username/create", isLoggedIn, async(req,res)=>{
 })
 
 //create a coverletter in the database
-  router.post("/profile/:username/create", isLoggedIn, async (req, res) => {
+router.post("/profile/:username/create", isLoggedIn, async (req, res) => {
     const user = await User.findOne({ username: req.params.username });
-    const { jobTitle, jobDescription } = req.body;
-    const response = await generateCoverLetter(jobTitle, jobDescription);
+    const { jobTitle, jobDescription, jobExperience } = req.body;
+    const response = await generateCoverLetter(jobTitle, jobDescription, jobExperience);
     const cvResponse = response.choices[0].text;
   
     req.session.jobTitle = jobTitle;
     req.session.jobDescription = jobDescription;
+    req.session.jobExperience = jobExperience;
     req.session.cvResponse = cvResponse;
   
-  async function generateCoverLetter(jobTitle, jobDescription) {
-    const apiKey = process.env.API_KEY;
-    const prompt = `Please write a cover letter for the following job position:\nJob Title: ${jobTitle}\nJob Description: ${jobDescription}\n\nCover Letter:`;
-    const response = await fetch('https://api.openai.com/v1/engines/text-davinci-002/completions', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-            prompt: prompt,
-            max_tokens: 1000,
-            n: 1,
-            stop: null,
-            temperature: 0.4,
-        }),
-    });
+    async function generateCoverLetter(jobTitle, jobDescription, jobExperience) {
+        const apiKey = process.env.API_KEY;
+        const prompt = `Please write a cover letter for the following job position:\nJob Title: ${jobTitle}\nJob Description: ${jobDescription}\n\nJob Experience: ${jobExperience}\n\nCover Letter:`;
+        const response = await fetch('https://api.openai.com/v1/engines/text-davinci-002/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+                prompt: prompt,
+                max_tokens: 100,
+                n: 1,
+                stop: null,
+                temperature: 0.4,
+            }),
+        });
 
-    const data = await response.json();
-    return data;
-}
+        const data = await response.json();
+        return data;
+    }
+
 
 res.render("create",{user,cvResponse})
   // const createCoverLetter = await CoverLetter.create({jobTitle,jobDescription,coverLetter:cvResponse,public})
