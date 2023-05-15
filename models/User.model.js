@@ -22,7 +22,9 @@ const userSchema = new Schema(
     },
     coverLetters:[{
       type: Schema.Types.ObjectId, ref: 'CoverLetter'
-    }]
+    }],
+    introduction: String,
+    jobExperience: String
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`    

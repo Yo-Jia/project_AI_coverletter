@@ -9,8 +9,8 @@
                 <label for="jobDescription">Job Description:</label>
                 <textarea id="jobDescription" name="jobDescription" required></textarea>
                 <br>
-                <label for="jobExperience">Your Job Experience:</label>
-                <input type="text" id="jobExperience" name="jobExperience" required>
+                {{!-- <label for="jobExperience">Your Job Experience:</label>
+                <input type="text" id="jobExperience" name="jobExperience" required> --}}
                 <br>
                 <button type="submit">Generate Cover Letter</button>
             </form>
@@ -24,25 +24,16 @@
                     <button id="copyButton">Copy to Clipboard</button>
                     <button id="downloadButton">Download Cover Letter</button>
                     <form method="post" action="/profile/{{user.username}}/save">
-                        <label for="public">Make public</label>
-                        <br>
-                        <button type="submit">Save Cover Letter</button>
+                        <label for="public">Cover Letter Visibility</label>
+                    <select name="public">
+                        <option value="true">public</option>
+                        <option value="false">private</option>
+                    </select>                        
+                    <button type="submit">Save Cover Letter</button>
                     </form>
                 </div>
 
             </div>
-
-
-            <script>
-                document.getElementById("copyButton").addEventListener("click", function () {
-                    const textToCopy = document.getElementById("popup-content").textContent;
-                    navigator.clipboard.writeText(textToCopy).then(function () {
-                        console.log("Text copied to clipboard");
-                    }).catch(function (err) {
-                        console.error("Failed to copy text: ", err);
-                    });
-                });
-            </script>
 
                 <script src="/js/coverLetter.js"></script>
 
@@ -50,23 +41,3 @@
 
         </body>
 
-
-    <!-- Scripts -->
-
-    <script>
-        document.getElementById('downloadButton').addEventListener('click', function () {
-            var cvResponse = document.getElementById('popup-content').textContent;
-            var filename = 'cover_letter.txt';
-
-            var element = document.createElement('a');
-            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(cvResponse));
-            element.setAttribute('download', filename);
-
-            element.style.display = 'none';
-            document.body.appendChild(element);
-
-            element.click();
-
-            document.body.removeChild(element);
-        });
- 

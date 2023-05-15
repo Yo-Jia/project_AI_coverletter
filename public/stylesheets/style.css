@@ -2820,7 +2820,7 @@ pre {
 
 /* Pop-up box */
 #popup {
-    display: none;
+    /* display: none; */
     position: fixed;
     top: 0;
     left: 0;
@@ -3099,14 +3099,14 @@ header h1 {
     max-height: 500px; 
 }
 
-label[for="public"] {
+/* label[for="public"] {
     display: inline-block;
     padding: 5px 10px;
     background-color: #007BFF;
     color: white;
     cursor: pointer;
     border-radius: 5px;
-}
+} */
 
 
 /*tip ands recommedations */

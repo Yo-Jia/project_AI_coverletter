@@ -6,7 +6,31 @@ const User = require("../models/User.model")
 const saltRounds = 12
 const bcryptjs = require("bcryptjs")
 const Contact = require("../models/Contact.model")
+const mongoose = require("mongoose")
 
+//render each coverletter page
+router.get("/profile/coverLetter/:coverLetterId", async(req,res)=>{
+  const coverLetter = await CoverLetter.findById(req.params.coverLetterId)
+  const owner = await User.findOne({coverLetters: req.params.coverLetterId});
+  let deleteButton = false
+  if(req.session.user){if(owner.username === req.session.user.username){
+    deleteButton = true
+    }}
+  
+  res.render("coverLetter",{user:req.session.user, coverLetter:coverLetter, deleteButton})
+})
+
+// delete a cover letter
+router.post("/profile/:coverLetterId/delete", async(req,res)=>{
+  const coverLetter = await CoverLetter.findByIdAndDelete(req.params.coverLetterId)
+  res.redirect(`/profile/${req.session.user.username}`)
+})
+
+
+router.get("/allCV", async(req,res)=>{
+  const allCV = await CoverLetter.find({public: true})
+  res.render("allCV",{allCV})
+})
 
 router.get("/contact",(req,res)=>{
   res.render("contact", {user:req.session.user})
@@ -35,6 +59,8 @@ router.get("/blog", (req, res, next) => {
 router.get("/coming-soon", (req, res, next) => {
   res.render("comingsoon");
 });
+
+
 
 //set the route in auth folder all under the /auth
 router.use("/auth", require("./auth.routes"))
@@ -65,8 +91,8 @@ router.post("/profile/:username/edit", isLoggedIn, async(req,res)=>{
     }
   const salt = await bcryptjs.genSalt(saltRounds);
   const hash = await bcryptjs.hash(req.body.password, salt);
-  const updateData = {username: req.body.username, email: req.body.email, password: hash}
-  const{username,email,password} = updateData
+  const updateData = {username: req.body.username, email: req.body.email, password: hash, introduction:req.body.introduction, jobExperience:req.body.jobExperience}
+  const{username,email,password, introduction,jobExperience} = updateData
   const user = await User.findOneAndUpdate(
     { username: req.params.username },
     updateData,
@@ -77,6 +103,8 @@ router.post("/profile/:username/edit", isLoggedIn, async(req,res)=>{
     username:username,
     email:email,
     password:password,
+    introduction:introduction,
+    jobExperience:jobExperience,
     message: "Update succeed!"
   })
 }
@@ -93,18 +121,6 @@ catch(err){
 }
 })
 
-//render each coverletter page
-router.get("/profile/coverLetter/:coverLetterId", isLoggedIn, async(req,res)=>{
-  const coverLetter = await CoverLetter.findById(req.params.coverLetterId)
-  console.log("here!!!", coverLetter)
-  res.render("coverLetter",{user:req.session.user, coverLetter:coverLetter})
-})
-
-// delete a cover letter
-router.post("/profile/:coverLetterId/delete", isLoggedIn, async(req,res)=>{
-  const coverLetter = await CoverLetter.findByIdAndDelete(req.params.coverLetterId)
-  res.redirect("/profile")
-})
 
 // create a cover letter page
 router.get("/profile/:username/create", isLoggedIn, async(req,res)=>{
@@ -115,7 +131,8 @@ router.get("/profile/:username/create", isLoggedIn, async(req,res)=>{
 //create a coverletter in the database
 router.post("/profile/:username/create", isLoggedIn, async (req, res) => {
     const user = await User.findOne({ username: req.params.username });
-    const { jobTitle, jobDescription, jobExperience } = req.body;
+    const {introduction,jobExperience} = user
+    const { jobTitle, jobDescription} = req.body;
     const response = await generateCoverLetter(jobTitle, jobDescription, jobExperience);
     const cvResponse = response.choices[0].text;
   
@@ -126,7 +143,7 @@ router.post("/profile/:username/create", isLoggedIn, async (req, res) => {
   
     async function generateCoverLetter(jobTitle, jobDescription, jobExperience) {
         const apiKey = process.env.API_KEY;
-        const prompt = `Please write a cover letter for the following job position:\nJob Title: ${jobTitle}\nJob Description: ${jobDescription}\n\nJob Experience: ${jobExperience}\n\nCover Letter:`;
+        const prompt = `Please write a cover letter for the following job position:\nJob Title: ${jobTitle}\nJob Description: ${jobDescription}\n\nmy Job Experience: ${jobExperience}\nmy introduction: ${introduction}\n\nCover Letter:`;
         const response = await fetch('https://api.openai.com/v1/engines/text-davinci-002/completions', {
             method: 'POST',
             headers: {
