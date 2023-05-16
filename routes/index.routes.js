@@ -7,8 +7,7 @@ const saltRounds = 12
 const bcryptjs = require("bcryptjs")
 const Contact = require("../models/Contact.model")
 const mongoose = require("mongoose")
-const fetch = require('node-fetch');
-
+const axios = require("axios")
 
 //render each coverletter page
 router.get("/profile/coverLetter/:coverLetterId", async(req,res)=>{
@@ -137,32 +136,33 @@ router.post("/profile/:username/create", isLoggedIn, async (req, res) => {
     const { jobTitle, jobDescription} = req.body;
     const response = await generateCoverLetter(jobTitle, jobDescription, jobExperience);
     const cvResponse = response.choices[0].text;
-  
+
     req.session.jobTitle = jobTitle;
     req.session.jobDescription = jobDescription;
     req.session.jobExperience = jobExperience;
     req.session.cvResponse = cvResponse;
   
     async function generateCoverLetter(jobTitle, jobDescription, jobExperience) {
-        const apiKey = process.env.API_KEY;
-        const prompt = `Please write a cover letter for the following job position:\nJob Title: ${jobTitle}\nJob Description: ${jobDescription}\n\nmy Job Experience: ${jobExperience}\nmy introduction: ${introduction}\n\nCover Letter:`;
-        const response = await fetch('https://api.openai.com/v1/engines/text-davinci-002/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${apiKey}`
-            },
-            body: JSON.stringify({
-                prompt: prompt,
-                max_tokens: 100,
-                n: 1,
-                stop: null,
-                temperature: 0.4,
-            }),
+      const apiKey = process.env.API_KEY;
+      const prompt = `Please write a cover letter for the following job position:\nJob Title: ${jobTitle}\nJob Description: ${jobDescription}\n\nMy Job Experience: ${jobExperience}\nMy Introduction: ${introduction}\n\nCover Letter:`;
+  
+      try {
+        const response = await axios.post('https://api.openai.com/v1/engines/text-davinci-002/completions', {
+          prompt: prompt,
+          max_tokens: 100,
+          n: 1,
+          stop: null,
+          temperature: 0.4,
+        }, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+          },
         });
-
-        const data = await response.json();
-        return data;
+        return response.data;
+      } catch (error) {
+        console.error(error);
+      }
     }
 
 
