@@ -3141,3 +3141,8 @@ header h1 {
     margin-bottom: 10px;
     text-align: center;
 }
+
+.warning-message{
+	font-weight: bold;
+	color: red;
+}
