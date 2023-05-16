@@ -7,6 +7,8 @@ const saltRounds = 12
 const bcryptjs = require("bcryptjs")
 const Contact = require("../models/Contact.model")
 const mongoose = require("mongoose")
+const fetch = require('node-fetch');
+
 
 //render each coverletter page
 router.get("/profile/coverLetter/:coverLetterId", async(req,res)=>{
