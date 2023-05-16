@@ -9,5 +9,9 @@
 <input type="email" name="email" value="{{user.email}}">
 <label for="password">Password</label>
 <input type="password" name="password" value="{{user.password}}">
+<label for="introduction">Your short introduction</label>
+<textarea name="introduction" rows="4" cols="50">{{user.introduction}}</textarea>
+<label for="jobExperience">Job Experience</label>
+<textarea name="jobExperience" rows="4" cols="50">{{user.jobExperience}}</textarea>
 <a href="/profile/{{user.username}}">Back to my Profile</a><button type="submit">Confirm</button>
 </form>

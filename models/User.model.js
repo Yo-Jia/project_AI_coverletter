@@ -12,8 +12,8 @@ const userSchema = new Schema(
     email: {
       type: String,
       required: true,
-      unique: true,
       lowercase: true,
+      unique:false,
       trim: true
     },
     password: {
@@ -22,7 +22,9 @@ const userSchema = new Schema(
     },
     coverLetters:[{
       type: Schema.Types.ObjectId, ref: 'CoverLetter'
-    }]
+    }],
+    introduction: String,
+    jobExperience: String
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`    

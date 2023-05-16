@@ -1,32 +1,33 @@
 <body class="is-preload homepage">
   <div id="page-wrapper">
 
-<form action="/auth/signup" method="post">
-<h1>Sign Up</h1>
-{{#if message}}
-    <div class="warning-message">{{message}}</div>
-  {{/if}}
-<div class="form-group">
-<label for="username">Username</label>
-<input type="text" id="username" name="username" placeholder="john123" required>
-</div>
-<div class="form-group">
-<label for="email">E-Mail</label>
-<input type="email" id="email" name="email" placeholder="john123@email.com" required>
-</div>
-<div class="form-group">
-<label for="password">Password</label>
-<input type="password" id="password" name="password" placeholder="***********" required> 
-</div>
-<div class="form-group">
-  <label for="confirmPassword">Confirm Password</label>
-  <input type="password" id="confirmPassword" name="confirm-password" placeholder="***********" required>
-</div>
-<button type="submit">Create an acount</button>
-</form>
-</div>
+    <form action="/auth/signup" method="post">
+      <h1>Sign Up</h1>
+      {{#if message}}
+      <div class="warning-message">{{message}}</div>
+      {{/if}}
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="john123" required>
+      </div>
+      <div class="form-group">
+        <label for="email">E-Mail</label>
+        <input type="email" id="email" name="email" placeholder="john123@email.com" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="***********" required>
+      </div>
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="***********" required>
+      </div>
+      <button type="submit">Create an account</button>
+      <a href="/auth/login" class="button" style="margin-top: 20px;">Existing User</a>
+    </form>
+  </div>
 </body>
 
-  <!-- Scripts -->
+<!-- Scripts -->
 
-  <script src="assets/js/main.js"></script>
+<script src="assets/js/main.js"></script>

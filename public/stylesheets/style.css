@@ -2771,7 +2771,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    margin-top: 20px;
+    margin-top: 50px;
 }
 
 #coverLetterForm label {
@@ -2781,13 +2781,13 @@ body {
     margin-bottom: 5px;
 }
 
-#coverLetterForm input[type="radio"] {
+/*#coverLetterForm input[type="radio"] {
     margin-right: 5px;
-}
+}*/
 
 #coverLetterForm input,
 #coverLetterForm textarea {
-    width: 100%;
+    width: 300%;
     max-width: 1000px;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -2820,7 +2820,7 @@ pre {
 
 /* Pop-up box */
 #popup {
-    display: none;
+    /* display: none; */
     position: fixed;
     top: 0;
     left: 0;
@@ -2873,7 +2873,7 @@ form {
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  width: 350px;
+  width: 1100px;
 }
 
 /* Form header */
@@ -2935,4 +2935,214 @@ button:hover {
   color: #ffffff;
   font-size: 36px;
   margin: 0;
+}
+
+.coverletter-overflow{
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+}
+.cv-box{
+	height:250px;
+}
+
+.cv-title{
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+/* Delete Button on Cover Letter */
+
+body {
+    font-family: Arial, sans-serif;
+    color: #333;
+    line-height: 1.6;
+}
+
+.cover-letter-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.cover-letter-header {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    color: #444;
+}
+
+.job-title {
+    color: #007BFF;
+}
+
+.section-header {
+    font-size: 1.2em;
+    color: #007BFF;
+    margin-bottom: 10px;
+}
+
+.job-description, .cover-letter-content {
+    white-space: pre-wrap;  
+}
+
+.delete-button {
+    color: white;
+    background-color: #dc3545;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    margin-top: 20px;
+    float: right;
+}
+
+.confirmation-popup {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.confirmation-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 30%;
+    text-align: center;
+}
+
+.confirm-delete, .cancel-delete {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+}
+.confirm-delete {
+    background-color: #dc3545;
+    color: white;
+}
+
+.cancel-delete {
+    background-color: #6c757d;
+    color: white;
+}
+
+
+/* Profile Page */
+
+
+header h1 {
+    color: #007BFF;
+	text-align: center;
+}
+
+.banner {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.profile-picture img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+}
+
+.basic-info, .bio, .skills, .work-experience, .education, .certifications, .social-media, .cover-letters {
+    background: white;
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+.basic-info h2, .bio h3, .skills h3, .work-experience h3, .education h3, .certifications h3, .social-media h3, .cover-letters h3 {
+    color: #007BFF;
+    margin-bottom: 10px;
+}
+
+.edit-profile-button {
+    background-color: #007BFF;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+}
+
+.skills ul {
+    list-style-type: square;
+    margin-left: 20px;
+}
+
+.cv-box {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.cv-box .inner {
+    padding: 10px;
+}
+
+
+/*insert scroll bar inside the pop up */
+
+#popup-inner {
+    overflow: auto; 
+    max-height: 500px; 
+}
+
+/* label[for="public"] {
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+} */
+
+
+/*tip ands recommedations */
+
+.tips-section {
+    margin-bottom: 20px;
+}
+
+.section-header {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 10px;
+	text-align: center;
+}
+
+.tips-list {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding: 0;
+    list-style-type: none;
+}
+
+.tip-item {
+    flex: 0 0 calc(20% - 10px);
+    background-color: #f4f4f4;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.warning-message{
+	font-weight: bold;
+	color: red;
 }

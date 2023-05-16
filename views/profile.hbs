@@ -1,1 +1,70 @@
-<h1>hello world</h1>
+
+<body class="is-preload homepage">
+    <div id="page-wrapper">
+
+        <body>
+            <header>
+                <h1>User Profile</h1>
+                <link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+            </header>
+            <main>
+                <div class="banner">
+                    <section class="profile-picture">
+                        <img src="/images/profile.jpeg" alt="Profile Picture">
+                    </section>
+                </div>
+                <!-- ... -->
+                <section class="basic-info">
+                    <div class="content">
+                        <h2>{{user.username}}'s Profile</h2>
+                        <div>
+                        <p><strong>Address: </strong> {{user.email}}</p>
+                        <p><strong>Your introduction:</strong> {{user.introduction}}</p>
+                        <p><strong>Job Experience:</strong> {{user.jobExperience}}</p>
+                        </div>
+                        <a href="/profile/{{user.username}}/edit"><button class="edit-profile-button">Edit Profile</button></a>
+                    </div>
+                    {{!-- <form class="edit-form" style="display: none;">
+                        <input type="text" name="name" placeholder="Name">
+                        <input type="email" name="email" placeholder="Email Address">
+                        <input type="text" name="jobTitle" placeholder="Job Title/Position">
+                        <button type="submit">Save</button>
+                        <button type="button" class="cancel-edit">Cancel</button>
+                    </form> --}}
+                </section>
+                
+                <!-- ... -->
+                <section class="cover-letters">
+  <h3>Cover Letters</h3>
+  {{#if user.coverLetters}}
+              <div id="features-wrapper">
+                <div class="container">
+                <div class="row">
+      {{#each user.coverLetters}}
+                    <div class="col-4 col-12-medium">
+
+                        <!-- Box -->
+                        <section class="box feature cv-box">
+                            <div class="inner">
+                                 <a href="/profile/coverLetter/{{this._id}}"></a><h3 class="cv-title">{{this.jobTitle}}</h3></a>
+                                <p class="coverletter-overflow">{{this.coverLetter}}</p>
+                                <a href="/profile/coverLetter/{{this._id}}">read more</a>
+                            </div>
+                        </section>
+                                            </div>
+
+      {{/each}}
+
+                    
+
+                    </div>
+                </div>
+            </div>
+  {{else}}
+    <p>No cover letters found.</p>
+  {{/if}}
+</section>
+            </main>
+            <script src="assets/js/profile.js"></script>
+            
+        </body>
