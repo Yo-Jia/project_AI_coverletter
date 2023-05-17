@@ -159,13 +159,18 @@ catch(err){
 // create a cover letter page
 router.get("/profile/:username/create", isLoggedIn, async(req,res)=>{
   const user = await User.findOne({username: req.params.username})
-  res.render("create",{user})
+  let warning
+  if(user.introduction === "" || user.jobExperience === ""){
+    warning = "To generate an optimized cover letter, please complete your introduction and your job experience details on the profile page. "
+  }
+  res.render("create",{user,warning})
 })
 
 //create a coverletter in the database
 router.post("/profile/:username/create", isLoggedIn, async (req, res) => {
     const user = await User.findOne({ username: req.params.username });
     const {introduction,jobExperience} = user
+
     const { jobTitle, jobDescription} = req.body;
     const response = await generateCoverLetter(jobTitle, jobDescription, jobExperience);
     const cvResponse = response.choices[0].text;
@@ -199,8 +204,6 @@ router.post("/profile/:username/create", isLoggedIn, async (req, res) => {
 
 
 res.render("create",{user,cvResponse})
-  // const createCoverLetter = await CoverLetter.create({jobTitle,jobDescription,coverLetter:cvResponse,public})
-  //  res.redirect(`/profile/coverLetter/${createCoverLetter._id}`)
 })
 
 router.post("/profile/:username/save", isLoggedIn, async (req, res) => {
