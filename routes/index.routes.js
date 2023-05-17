@@ -8,7 +8,10 @@ const bcryptjs = require("bcryptjs")
 const Contact = require("../models/Contact.model")
 const mongoose = require("mongoose")
 const axios = require("axios")
+const menuLoginStatus = require("../middlewares/menuLoginStatus")
 
+
+router.use(menuLoginStatus)
 //render each coverletter page
 router.get("/profile/coverLetter/:coverLetterId", async(req,res)=>{
   const coverLetter = await CoverLetter.findById(req.params.coverLetterId)
@@ -17,8 +20,7 @@ router.get("/profile/coverLetter/:coverLetterId", async(req,res)=>{
   if(req.session.user){if(owner.username === req.session.user.username){
     deleteButton = true
     }}
-  
-  res.render("coverLetter",{user:req.session.user, coverLetter:coverLetter, deleteButton})
+  res.render("coverLetter",{user:req.session.user, coverLetter:coverLetter, deleteButton, login:res.locals.loggedIn})
 })
 
 // delete a cover letter
@@ -30,7 +32,7 @@ router.post("/profile/:coverLetterId/delete", async(req,res)=>{
 //render edit cover lettre page
 router.get("/profile/coverLetter/:coverLetterId/edit", isLoggedIn, async(req,res)=>{
   const coverLetter = await CoverLetter.findById(req.params.coverLetterId)
-  res.render("editCoverLetter",{coverLetter})
+  res.render("editCoverLetter",{coverLetter,user:req.session.user})
 })
 
 
@@ -52,7 +54,8 @@ router.post("/profile/coverLetter/:coverLetterId/edit", isLoggedIn, async(req,re
       jobDescription:updateCoverLetter.jobDescription,
       coverLetter:updateCoverLetter.coverLetter,
       public:updateCoverLetter.public}
-    ,message: "Update succeed!"
+    ,message: "Update succeed!",
+    user:req.session.user
   })
 }
 catch(err){
@@ -63,7 +66,7 @@ catch(err){
 
 router.get("/allCV", async(req,res)=>{
   const allCV = await CoverLetter.find({public: true})
-  res.render("allCV",{allCV})
+  res.render("allCV",{allCV,user:req.session.user})
 })
 
 router.get("/contact",(req,res)=>{
@@ -75,23 +78,23 @@ router.post("/contact", async (req, res) => {
   const contact = new Contact({name:req.body.name,email:req.body.email,message:req.body.message})
   const saveContact = await contact.save();
   console.log(saveContact)
-  res.render("contact",{message:'Thank you for contacting us! We will get back to you shortly.'})}
+  res.render("contact",{message:'Thank you for contacting us! We will get back to you shortly.',user:req.session.user})}
   catch(err){console.log("there's an error",err)}
 })
 
 /* GET home page */
 router.get("/", (req, res, next) => {
-  res.render("index");
+  res.render("index",{user:req.session.user});
 });
 
 /* Blog page */
 router.get("/blog", (req, res, next) => {
-  res.render("blog");
+  res.render("blog",{user:req.session.user});
 });
 
 /* Coming soon page */
 router.get("/coming-soon", (req, res, next) => {
-  res.render("comingsoon");
+  res.render("comingsoon",{user:req.session.user});
 });
 
 
@@ -99,7 +102,6 @@ router.get("/coming-soon", (req, res, next) => {
 //set the route in auth folder all under the /auth
 router.use("/auth", require("./auth.routes"))
 
-router.use(isLoggedIn);
 
 //render profile page get all the infos from user
 router.get("/profile/:username", isLoggedIn, async(req,res)=>{
