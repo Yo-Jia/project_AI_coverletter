@@ -27,6 +27,39 @@ router.post("/profile/:coverLetterId/delete", async(req,res)=>{
   res.redirect(`/profile/${req.session.user.username}`)
 })
 
+//render edit cover lettre page
+router.get("/profile/coverLetter/:coverLetterId/edit", isLoggedIn, async(req,res)=>{
+  const coverLetter = await CoverLetter.findById(req.params.coverLetterId)
+  res.render("editCoverLetter",{coverLetter})
+})
+
+
+//edit a cover letter
+router.post("/profile/coverLetter/:coverLetterId/edit", isLoggedIn, async(req,res)=>{
+  try{
+  
+  const {jobTitle,jobDescription,coverLetter,public} = req.body
+  const updateData = {jobTitle,jobDescription,coverLetter,public} 
+  const updateCoverLetter = await CoverLetter.findOneAndUpdate(
+    { _id: req.params.coverLetterId },
+    updateData,
+    { new: true }
+  )
+  res.render("editCoverLetter",{
+    coverLetter:{
+      _id:updateCoverLetter._id,
+      jobTitle:updateCoverLetter.jobTitle,
+      jobDescription:updateCoverLetter.jobDescription,
+      coverLetter:updateCoverLetter.coverLetter,
+      public:updateCoverLetter.public}
+    ,message: "Update succeed!"
+  })
+}
+catch(err){
+  console.log(err)
+}
+})
+
 
 router.get("/allCV", async(req,res)=>{
   const allCV = await CoverLetter.find({public: true})
@@ -136,7 +169,6 @@ router.post("/profile/:username/create", isLoggedIn, async (req, res) => {
     const { jobTitle, jobDescription} = req.body;
     const response = await generateCoverLetter(jobTitle, jobDescription, jobExperience);
     const cvResponse = response.choices[0].text;
-
     req.session.jobTitle = jobTitle;
     req.session.jobDescription = jobDescription;
     req.session.jobExperience = jobExperience;

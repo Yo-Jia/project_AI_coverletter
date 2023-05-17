@@ -30,12 +30,14 @@
             <p class="cover-letter-content">{{coverLetter.coverLetter}}</p>
         </div>
 {{#if deleteButton}}
-        <button id="delete-button" class="delete-button">Delete</button>
+                
+                <button id="delete-button" class="delete-button">Delete</button>
+                <a href="/profile/coverLetter/{{coverLetter._id}}/edit"><button type="submit" class="edit-button">Edit</button></a>
 {{/if}}
         <div id="confirmation-popup" class="confirmation-popup">
             <div class="confirmation-content">
                 <p>Are you sure you want to delete? You won't be able to recover the cover letter once deleted.</p>
-                <form action="/profile/{{coverLetter._id}}/delete" method="post">
+                <form action="/profile/{{coverLetter._id}}/delete" method="post" class="none-style-form">
                 <button id="confirm-delete" class="confirm-delete" type="submit">Yes, Delete</button>
                 </form>
                 <button id="cancel-delete" class="cancel-delete">No, Cancel</button>
