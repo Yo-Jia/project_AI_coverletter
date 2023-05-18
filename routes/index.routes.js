@@ -9,6 +9,8 @@ const Contact = require("../models/Contact.model")
 const mongoose = require("mongoose")
 const axios = require("axios")
 const menuLoginStatus = require("../middlewares/menuLoginStatus")
+const fileUploader = require('../config/cloudinary.config');
+
 
 
 router.use(menuLoginStatus)
@@ -116,6 +118,7 @@ router.get("/profile/:username/edit", isLoggedIn, async(req,res)=>{
   res.render("editProfile",{user})
 })
 
+
 //post the data from edit profile page and render a edited version
 router.post("/profile/:username/edit", isLoggedIn, async(req,res)=>{
   try{
@@ -154,6 +157,21 @@ catch(err){
     password:password,
     message: err.message
   })
+}
+})
+
+//edit profile image
+router.post("/profile/:username/editImg", isLoggedIn,fileUploader.single('image'),  async(req,res)=>{
+  try{
+  const user = await User.findOneAndUpdate(
+    { username: req.params.username },
+    {image: req.file.path},
+    { new: true }
+  )
+  res.redirect(`/profile/${req.session.user.username}`)
+}
+catch(err){
+  console.log(err)
 }
 })
 
