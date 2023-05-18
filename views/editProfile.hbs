@@ -1,6 +1,6 @@
 <h1>Edit your Profile</h1>
 {{#if message}}
-<div class="warning">{{message}}</div>
+<div class="warning-message">{{message}}</div>
 {{/if}}
 <form action="/profile/{{user.username}}/edit" method="post">
 <label for="username">Username</label>

@@ -2934,7 +2934,7 @@ button:hover {
 #heading-wrapper h1 {
   color: #ffffff;
   font-size: 36px;
-  margin: 0;
+  margin: 0px 30px;
 }
 
 .coverletter-overflow{
@@ -2995,6 +2995,17 @@ body {
     cursor: pointer;
     margin-top: 20px;
     float: right;
+}
+
+.edit-button {
+    color: white;
+    background-color: #007BFF;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    margin-top: 20px;
+    float: right;
+	margin-right: 20px;
 }
 
 .confirmation-popup {
@@ -3145,4 +3156,8 @@ header h1 {
 .warning-message{
 	font-weight: bold;
 	color: red;
+}
+
+.none-style-form{
+    all: initial;
 }

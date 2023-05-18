@@ -10,7 +10,16 @@
             <main>
                 <div class="banner">
                     <section class="profile-picture">
+                        {{#if user.image}}
+                        <img src="{{user.image}}" alt="Profile Picture">
+                        {{else}}
                         <img src="/images/profile.jpeg" alt="Profile Picture">
+                        {{/if}}
+                        <form class="none-style-form" method="post" action="/profile/{{user.username}}/editImg" enctype="multipart/form-data">
+                            <label for="image">edit profile image</label>
+                            <input type="file" name="image" required />
+                            <button type="submit">Upload</button>
+                        </form>
                     </section>
                 </div>
                 <!-- ... -->

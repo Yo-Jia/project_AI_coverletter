@@ -2,6 +2,11 @@
     <div id="page-wrapper">
 
         <body>
+            <h1>Generate cover letter</h1>
+            {{#if warning}}
+            <div class="warning-message">{{warning}}</div>
+            <a href="/profile/{{user.username}}/edit">add now!</a>
+            {{/if}}
             <form method="post" action="/profile/{{user.username}}/create" id="coverLetterForm">
                 <label for="jobTitle">Job Title:</label>
                 <input type="text" id="jobTitle" name="jobTitle" required>
