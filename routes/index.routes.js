@@ -180,7 +180,7 @@ catch(err){
 router.get("/profile/:username/create", isLoggedIn, async(req,res)=>{
   const user = await User.findOne({username: req.params.username})
   let warning
-  if(user.introduction === "" || user.jobExperience === ""){
+  if(user.introduction === "" ||user.introduction === undefined || user.jobExperience === ""|| user.jobExperience === undefined){
     warning = "To generate an optimized cover letter, please complete your introduction and your job experience details on the profile page. "
   }
   res.render("create",{user,warning})
