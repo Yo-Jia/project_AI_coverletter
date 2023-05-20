@@ -59,3 +59,14 @@
 })(jQuery);
 
 
+// get current page
+var path = window.location.pathname;
+var page = path.split("/").pop();
+
+// highlight the active link
+document.querySelectorAll('#navPanel .link').forEach(function(link) {
+ 
+  if (link.getAttribute('href') === page) {
+    link.classList.add('active');
+  }
+});
