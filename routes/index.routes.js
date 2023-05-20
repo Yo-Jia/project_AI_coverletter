@@ -8,7 +8,12 @@ const bcryptjs = require("bcryptjs")
 const Contact = require("../models/Contact.model")
 const mongoose = require("mongoose")
 const axios = require("axios")
+const menuLoginStatus = require("../middlewares/menuLoginStatus")
+const fileUploader = require('../config/cloudinary.config');
 
+
+
+router.use(menuLoginStatus)
 //render each coverletter page
 router.get("/profile/coverLetter/:coverLetterId", async(req,res)=>{
   const coverLetter = await CoverLetter.findById(req.params.coverLetterId)
@@ -17,8 +22,7 @@ router.get("/profile/coverLetter/:coverLetterId", async(req,res)=>{
   if(req.session.user){if(owner.username === req.session.user.username){
     deleteButton = true
     }}
-  
-  res.render("coverLetter",{user:req.session.user, coverLetter:coverLetter, deleteButton})
+  res.render("coverLetter",{user:req.session.user, coverLetter:coverLetter, deleteButton, login:res.locals.loggedIn})
 })
 
 // delete a cover letter
@@ -27,10 +31,44 @@ router.post("/profile/:coverLetterId/delete", async(req,res)=>{
   res.redirect(`/profile/${req.session.user.username}`)
 })
 
+//render edit cover lettre page
+router.get("/profile/coverLetter/:coverLetterId/edit", isLoggedIn, async(req,res)=>{
+  const coverLetter = await CoverLetter.findById(req.params.coverLetterId)
+  res.render("editCoverLetter",{coverLetter,user:req.session.user})
+})
+
+
+//edit a cover letter
+router.post("/profile/coverLetter/:coverLetterId/edit", isLoggedIn, async(req,res)=>{
+  try{
+  
+  const {jobTitle,jobDescription,coverLetter,public} = req.body
+  const updateData = {jobTitle,jobDescription,coverLetter,public} 
+  const updateCoverLetter = await CoverLetter.findOneAndUpdate(
+    { _id: req.params.coverLetterId },
+    updateData,
+    { new: true }
+  )
+  res.render("editCoverLetter",{
+    coverLetter:{
+      _id:updateCoverLetter._id,
+      jobTitle:updateCoverLetter.jobTitle,
+      jobDescription:updateCoverLetter.jobDescription,
+      coverLetter:updateCoverLetter.coverLetter,
+      public:updateCoverLetter.public}
+    ,message: "Update succeed!",
+    user:req.session.user
+  })
+}
+catch(err){
+  console.log(err)
+}
+})
+
 
 router.get("/allCV", async(req,res)=>{
   const allCV = await CoverLetter.find({public: true})
-  res.render("allCV",{allCV})
+  res.render("allCV",{allCV,user:req.session.user})
 })
 
 router.get("/contact",(req,res)=>{
@@ -42,23 +80,23 @@ router.post("/contact", async (req, res) => {
   const contact = new Contact({name:req.body.name,email:req.body.email,message:req.body.message})
   const saveContact = await contact.save();
   console.log(saveContact)
-  res.render("contact",{message:'Thank you for contacting us! We will get back to you shortly.'})}
+  res.render("contact",{message:'Thank you for contacting us! We will get back to you shortly.',user:req.session.user})}
   catch(err){console.log("there's an error",err)}
 })
 
 /* GET home page */
 router.get("/", (req, res, next) => {
-  res.render("index");
+  res.render("index",{user:req.session.user});
 });
 
 /* Blog page */
 router.get("/blog", (req, res, next) => {
-  res.render("blog");
+  res.render("blog",{user:req.session.user});
 });
 
 /* Coming soon page */
 router.get("/coming-soon", (req, res, next) => {
-  res.render("comingsoon");
+  res.render("comingsoon",{user:req.session.user});
 });
 
 
@@ -66,7 +104,6 @@ router.get("/coming-soon", (req, res, next) => {
 //set the route in auth folder all under the /auth
 router.use("/auth", require("./auth.routes"))
 
-router.use(isLoggedIn);
 
 //render profile page get all the infos from user
 router.get("/profile/:username", isLoggedIn, async(req,res)=>{
@@ -80,6 +117,7 @@ router.get("/profile/:username/edit", isLoggedIn, async(req,res)=>{
   const user = await User.findOne({username: req.params.username})
   res.render("editProfile",{user})
 })
+
 
 //post the data from edit profile page and render a edited version
 router.post("/profile/:username/edit", isLoggedIn, async(req,res)=>{
@@ -122,21 +160,40 @@ catch(err){
 }
 })
 
+//edit profile image
+router.post("/profile/:username/editImg", isLoggedIn,fileUploader.single('image'),  async(req,res)=>{
+  try{
+  const user = await User.findOneAndUpdate(
+    { username: req.params.username },
+    {image: req.file.path},
+    { new: true }
+  )
+  res.redirect(`/profile/${req.session.user.username}`)
+}
+catch(err){
+  console.log(err)
+}
+})
+
 
 // create a cover letter page
 router.get("/profile/:username/create", isLoggedIn, async(req,res)=>{
   const user = await User.findOne({username: req.params.username})
-  res.render("create",{user})
+  let warning
+  if(user.introduction === "" ||user.introduction === undefined || user.jobExperience === ""|| user.jobExperience === undefined){
+    warning = "To generate an optimized cover letter, please complete your introduction and your job experience details on the profile page. "
+  }
+  res.render("create",{user,warning})
 })
 
 //create a coverletter in the database
 router.post("/profile/:username/create", isLoggedIn, async (req, res) => {
     const user = await User.findOne({ username: req.params.username });
     const {introduction,jobExperience} = user
+
     const { jobTitle, jobDescription} = req.body;
     const response = await generateCoverLetter(jobTitle, jobDescription, jobExperience);
     const cvResponse = response.choices[0].text;
-
     req.session.jobTitle = jobTitle;
     req.session.jobDescription = jobDescription;
     req.session.jobExperience = jobExperience;
@@ -149,10 +206,10 @@ router.post("/profile/:username/create", isLoggedIn, async (req, res) => {
       try {
         const response = await axios.post('https://api.openai.com/v1/engines/text-davinci-002/completions', {
           prompt: prompt,
-          max_tokens: 100,
+          max_tokens: 1000,
           n: 1,
           stop: null,
-          temperature: 0.4,
+          temperature: 0.7,
         }, {
           headers: {
             'Content-Type': 'application/json',
@@ -167,8 +224,6 @@ router.post("/profile/:username/create", isLoggedIn, async (req, res) => {
 
 
 res.render("create",{user,cvResponse})
-  // const createCoverLetter = await CoverLetter.create({jobTitle,jobDescription,coverLetter:cvResponse,public})
-  //  res.redirect(`/profile/coverLetter/${createCoverLetter._id}`)
 })
 
 router.post("/profile/:username/save", isLoggedIn, async (req, res) => {
