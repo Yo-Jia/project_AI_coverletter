@@ -14,75 +14,7 @@ const fileUploader = require('../config/cloudinary.config');
 
 
 router.use(menuLoginStatus)
-//render each coverletter page
-router.get("/profile/coverLetter/:coverLetterId", async(req,res)=>{
-  const coverLetter = await CoverLetter.findById(req.params.coverLetterId)
-  const owner = await User.findOne({coverLetters: req.params.coverLetterId});
-  let deleteButton = false
-  if(req.session.user){if(owner.username === req.session.user.username){
-    deleteButton = true
-    }}
-  res.render("coverLetter",{user:req.session.user, coverLetter:coverLetter, deleteButton, login:res.locals.loggedIn})
-})
 
-// delete a cover letter
-router.post("/profile/:coverLetterId/delete", async(req,res)=>{
-  const coverLetter = await CoverLetter.findByIdAndDelete(req.params.coverLetterId)
-  res.redirect(`/profile/${req.session.user.username}`)
-})
-
-//render edit cover lettre page
-router.get("/profile/coverLetter/:coverLetterId/edit", isLoggedIn, async(req,res)=>{
-  const coverLetter = await CoverLetter.findById(req.params.coverLetterId)
-  res.render("editCoverLetter",{coverLetter,user:req.session.user})
-})
-
-
-//edit a cover letter
-router.post("/profile/coverLetter/:coverLetterId/edit", isLoggedIn, async(req,res)=>{
-  try{
-  
-  const {jobTitle,jobDescription,coverLetter,public} = req.body
-  const updateData = {jobTitle,jobDescription,coverLetter,public} 
-  const updateCoverLetter = await CoverLetter.findOneAndUpdate(
-    { _id: req.params.coverLetterId },
-    updateData,
-    { new: true }
-  )
-  res.render("editCoverLetter",{
-    coverLetter:{
-      _id:updateCoverLetter._id,
-      jobTitle:updateCoverLetter.jobTitle,
-      jobDescription:updateCoverLetter.jobDescription,
-      coverLetter:updateCoverLetter.coverLetter,
-      public:updateCoverLetter.public}
-    ,message: "Update succeed!",
-    user:req.session.user
-  })
-}
-catch(err){
-  console.log(err)
-}
-})
-
-
-router.get("/allCV", async(req,res)=>{
-  const allCV = await CoverLetter.find({public: true})
-  res.render("allCV",{allCV,user:req.session.user})
-})
-
-router.get("/contact",(req,res)=>{
-  res.render("contact", {user:req.session.user})
-})
-
-router.post("/contact", async (req, res) => {
-  try{
-  const contact = new Contact({name:req.body.name,email:req.body.email,message:req.body.message})
-  const saveContact = await contact.save();
-  console.log(saveContact)
-  res.render("contact",{message:'Thank you for contacting us! We will get back to you shortly.',user:req.session.user})}
-  catch(err){console.log("there's an error",err)}
-})
 
 /* GET home page */
 router.get("/", (req, res, next) => {
@@ -244,6 +176,74 @@ router.post("/profile/:username/save", isLoggedIn, async (req, res) => {
   res.redirect(`/profile/coverLetter/${coverLetter._id}`);
 });
 
+//render each coverletter page
+router.get("/profile/coverLetter/:coverLetterId", async(req,res)=>{
+  const coverLetter = await CoverLetter.findById(req.params.coverLetterId)
+  const owner = await User.findOne({coverLetters: req.params.coverLetterId});
+  let deleteButton = false
+  if(req.session.user){if(owner.username === req.session.user.username){
+    deleteButton = true
+    }}
+  res.render("coverLetter",{user:req.session.user, coverLetter:coverLetter, deleteButton, login:res.locals.loggedIn})
+})
 
+// delete a cover letter
+router.post("/profile/:coverLetterId/delete", async(req,res)=>{
+  const coverLetter = await CoverLetter.findByIdAndDelete(req.params.coverLetterId)
+  res.redirect(`/profile/${req.session.user.username}`)
+})
+
+//render edit cover lettre page
+router.get("/profile/coverLetter/:coverLetterId/edit", isLoggedIn, async(req,res)=>{
+  const coverLetter = await CoverLetter.findById(req.params.coverLetterId)
+  res.render("editCoverLetter",{coverLetter,user:req.session.user})
+})
+
+
+//edit a cover letter
+router.post("/profile/coverLetter/:coverLetterId/edit", isLoggedIn, async(req,res)=>{
+  try{
+  
+  const {jobTitle,jobDescription,coverLetter,public} = req.body
+  const updateData = {jobTitle,jobDescription,coverLetter,public} 
+  const updateCoverLetter = await CoverLetter.findOneAndUpdate(
+    { _id: req.params.coverLetterId },
+    updateData,
+    { new: true }
+  )
+  res.render("editCoverLetter",{
+    coverLetter:{
+      _id:updateCoverLetter._id,
+      jobTitle:updateCoverLetter.jobTitle,
+      jobDescription:updateCoverLetter.jobDescription,
+      coverLetter:updateCoverLetter.coverLetter,
+      public:updateCoverLetter.public}
+    ,message: "Update succeed!",
+    user:req.session.user
+  })
+}
+catch(err){
+  console.log(err)
+}
+})
+
+
+router.get("/allCV", async(req,res)=>{
+  const allCV = await CoverLetter.find({public: true})
+  res.render("allCV",{allCV,user:req.session.user})
+})
+
+router.get("/contact",(req,res)=>{
+  res.render("contact", {user:req.session.user})
+})
+
+router.post("/contact", async (req, res) => {
+  try{
+  const contact = new Contact({name:req.body.name,email:req.body.email,message:req.body.message})
+  const saveContact = await contact.save();
+  console.log(saveContact)
+  res.render("contact",{message:'Thank you for contacting us! We will get back to you shortly.',user:req.session.user})}
+  catch(err){console.log("there's an error",err)}
+})
 
 module.exports = router;
